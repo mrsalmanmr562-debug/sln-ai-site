@@ -24,7 +24,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{display:grid;grid-
  <button class="navbtn" data-page="image">✧　 ساخت تصویر</button>
  <button class="navbtn" data-page="tools">⚡　 ابزارهای هوشمند</button>
  <div class="navtitle">گفت‌وگوهای اخیر</div><div class="history" id="history"></div>
- <div class="sidefoot"><span class="online">●</span> رابط کاربری آماده است<br>نسخه آزمایشی رایگان</div>
+ <div class="sidefoot"><span class="online">●</span> آماده اتصال به هوش مصنوعی<br>نسخه رایگان با محدودیت مصرف</div>
 </aside>
 <main class="main">
  <header class="topbar"><div><strong id="topTitle">فضای هوشمند شما</strong><div class="sub">ایده‌هایت را به نتیجه تبدیل کن</div></div><span class="pill">✦ نسخه آزمایشی</span></header>
@@ -37,7 +37,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{display:grid;grid-
     <button class="toolcard" data-go="history"><div class="toolicon">◷</div><strong>تاریخچه گفتگوها</strong><small>بازگشت به گفتگوهای قبلی</small></button>
     <button class="toolcard" data-go="tools"><div class="toolicon">⌘</div><strong>ابزارهای هوشمند</strong><small>خلاصه‌سازی، ترجمه و بیشتر</small></button>
    </div>
-   <div class="chatwrap" id="chatbox"><div class="chathead"><div><strong>گفت‌وگوی تازه</strong><small>دستیار SLN AI</small></div><span class="online">● آماده</span></div><div class="messages" id="messages"><div class="welcome"><div class="mini-logo">AI</div><div>سلام! من دستیار رابط SLN AI هستم. می‌توانم در این نسخه آزمایشی بهت کمک کنم متن را خلاصه، ترجمه یا بازنویسی کنی. برای پاسخ‌های عمومی واقعی باید یک مدل هوش مصنوعی به سایت متصل شود.</div></div></div><form class="composer" id="chatForm"><textarea id="prompt" placeholder="هر چیزی که در ذهن داری بنویس..." rows="1"></textarea><button class="send" type="submit">ارسال ↑</button></form><div class="hint">نسخه نمایشی · برای پاسخ‌های مدل واقعی هنوز اتصال هوش مصنوعی لازم است</div></div>
+   <div class="chatwrap" id="chatbox"><div class="chathead"><div><strong>گفت‌وگوی تازه</strong><small>دستیار SLN AI</small></div><span class="online">● آماده</span></div><div class="messages" id="messages"><div class="welcome"><div class="mini-logo">AI</div><div>سلام! من دستیار هوشمند SLN AI هستم. پیام‌هایت را برای دریافت پاسخ از مدل هوش مصنوعی ارسال می‌کنم. برای شروع، یک سؤال بپرس!</div></div></div><form class="composer" id="chatForm"><textarea id="prompt" placeholder="هر چیزی که در ذهن داری بنویس..." rows="1"></textarea><button class="send" type="submit">ارسال ↑</button></form><div class="hint">پاسخ‌ها با مدل هوش مصنوعی رایگان ارائه می‌شوند؛ استفاده تابع سهمیه رایگان سرویس است</div></div>
   </section>
   <section class="page" id="image"><div class="pagehead"><h2>ساخت تصویر با هوش مصنوعی</h2><p>ایده‌ات را توصیف کن و برای تولید تصویر آماده‌اش کن.</p></div><div class="chatwrap"><label for="imagePrompt">توضیح تصویر</label><textarea id="imagePrompt" class="field" rows="4" placeholder="مثلاً: یک شهر آینده‌نگر در شب با نورهای آبی و بنفش، سبک سینمایی..."></textarea><button class="primary" id="makeImage">آماده‌سازی درخواست تصویر</button><div id="imageResult"></div><div class="notice">در این نسخه، فرم و طراحی بخش تصویر آماده است؛ تولید واقعی تصویر نیاز به اتصال به یک مدل تصویرساز رایگان یا سرویس میزبانی مدل دارد.</div></div></section>
   <section class="page" id="tools"><div class="pagehead"><h2>ابزارهای هوشمند</h2><p>متن خود را وارد کن و یکی از ابزارها را انتخاب کن.</p></div><div class="chatwrap"><label for="toolInput">متن ورودی</label><textarea id="toolInput" class="field" rows="5" placeholder="متن را اینجا وارد کن..."></textarea><label for="toolType">ابزار</label><select id="toolType" class="field"><option value="summary">خلاصه‌سازی</option><option value="rewrite">بازنویسی روان</option><option value="formal">رسمی‌کردن متن</option><option value="translate">ترجمه به انگلیسی (نمایشی)</option><option value="ideas">ایده‌پردازی بر اساس متن</option></select><button class="primary" id="runTool">اجرای ابزار</button><div id="toolResult"></div></div></section>
@@ -53,9 +53,35 @@ $$('.navbtn,[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.d
 $$('[data-go]').forEach(b=>b.addEventListener('click',()=>{const go=b.dataset.go;if(go==='chat'){showPage('home');$('#prompt').focus()}else showPage(go)}));
 function renderHistory(){const host=$('#historyList');host.innerHTML='';if(!conversations.length){host.innerHTML='<div class="empty">هنوز گفت‌وگویی ذخیره نشده است. از صفحه اصلی یک گفتگو شروع کن.</div>';return}conversations.slice().reverse().forEach(c=>{const b=document.createElement('button');b.className='navbtn';b.style.cssText='width:100%;border:1px solid var(--line);margin-bottom:8px';b.textContent='◷　'+c.title;b.onclick=()=>{current=JSON.parse(JSON.stringify(c));showPage('home');renderMessages()};host.appendChild(b)})}
 function renderSideHistory(){const h=$('#history');h.innerHTML='';conversations.slice(-5).reverse().forEach(c=>{const d=document.createElement('div');d.className='historyitem';d.textContent='◦ '+c.title;d.onclick=()=>{current=JSON.parse(JSON.stringify(c));showPage('home');renderMessages()};h.appendChild(d)})}
-function renderMessages(){const host=$('#messages');host.innerHTML='';if(!current.messages.length){host.innerHTML='<div class="welcome"><div class="mini-logo">AI</div><div>گفتگو را از اینجا شروع کن. این نسخه ابزارهای متنی ساده دارد و هنوز به مدل گفت‌وگوی واقعی متصل نیست.</div></div>';return}current.messages.forEach(m=>{const d=document.createElement('div');d.className='bubble '+(m.role==='user'?'user':'assistant');d.textContent=m.text;host.appendChild(d)});host.scrollTop=host.scrollHeight}
-function localResponse(text){const t=text.trim();if(/خلاصه/.test(t)){return 'برای خلاصه‌سازی، متن را در بخش «ابزارهای هوشمند» وارد کن و گزینه خلاصه‌سازی را بزن.'}if(/سلام|درود|hi\b/i.test(t))return 'سلام! خوش اومدی به SLN AI. می‌تونم در این نسخه آزمایشی در کارهای ساده متنی کمکت کنم. برای پاسخ‌های آزاد و هوشمند باید مدل هوش مصنوعی متصل بشه.';if(/ترجمه/.test(t))return 'برای استفاده از ابزار ترجمه، بخش «ابزارهای هوشمند» را باز کن. توجه: ابزارهای این نسخه به مدل ترجمه آنلاین متصل نیستند.';return 'پیامت دریافت شد:\n«'+t+'»\n\nاین نسخه فعلاً یک نمونه اولیه تعاملی است و به مدل زبانی واقعی متصل نیست؛ بنابراین نمی‌تواند مثل یک دستیار آنلاین به همه پرسش‌ها پاسخ تولید کند. برای فعال‌کردن پاسخ‌های واقعی باید مدل رایگانِ در دسترس را به سایت متصل کنیم.'}
-$('#chatForm').addEventListener('submit',e=>{e.preventDefault();const text=$('#prompt').value.trim();if(!text)return;current.messages.push({role:'user',text});if(current.messages.length===1)current.title=text.slice(0,32);current.messages.push({role:'assistant',text:localResponse(text)});const idx=conversations.findIndex(c=>c.id===current.id);if(idx>=0)conversations[idx]=current;else conversations.push(current);save();renderMessages();renderSideHistory();$('#prompt').value='';});
+function renderMessages(){const host=$('#messages');host.innerHTML='';if(!current.messages.length){host.innerHTML='<div class="welcome"><div class="mini-logo">AI</div><div>گفتگو را از اینجا شروع کن. پس از اتصال Worker رایگان Cloudflare، پاسخ‌ها از مدل هوش مصنوعی دریافت می‌شوند.</div></div>';return}current.messages.forEach(m=>{const d=document.createElement('div');d.className='bubble '+(m.role==='user'?'user':'assistant');d.textContent=m.text;host.appendChild(d)});host.scrollTop=host.scrollHeight}
+// پس از ساخت Worker در Cloudflare، نشانی آن را در مقدار زیر قرار بده.
+const AI_API_URL = 'PASTE_YOUR_CLOUDFLARE_WORKER_URL_HERE';
+$('#chatForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const text=$('#prompt').value.trim();
+ if(!text)return;
+ if(AI_API_URL==='PASTE_YOUR_CLOUDFLARE_WORKER_URL_HERE'){
+   alert('اتصال سرور هنوز تنظیم نشده است. ابتدا Worker رایگان Cloudflare را بساز و نشانی آن را در کد سایت قرار بده.');
+   return;
+ }
+ current.messages.push({role:'user',text});
+ if(current.messages.length===1)current.title=text.slice(0,32);
+ $('#prompt').value='';
+ const sendButton=$('.send'); sendButton.disabled=true; sendButton.textContent='در حال پاسخ…';
+ renderMessages();
+ try{
+   const response=await fetch(AI_API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:current.messages.slice(-20).map(m=>({role:m.role,content:m.text}))})});
+   const data=await response.json();
+   if(!response.ok)throw new Error(data.error||'ارتباط با سرویس هوش مصنوعی برقرار نشد.');
+   const answer=data.response||data.result?.response||'پاسخی از مدل دریافت نشد.';
+   current.messages.push({role:'assistant',text:answer});
+ }catch(err){
+   current.messages.push({role:'assistant',text:'متأسفانه اتصال به هوش مصنوعی انجام نشد. لطفاً آدرس Worker و تنظیمات Cloudflare را بررسی کن.\nجزئیات: '+err.message});
+ }
+ const idx=conversations.findIndex(c=>c.id===current.id);
+ if(idx>=0)conversations[idx]=current;else conversations.push(current);
+ save();renderMessages();renderSideHistory();sendButton.disabled=false;sendButton.textContent='ارسال ↑';
+});
 $('#newChat').addEventListener('click',()=>{current={id:Date.now(),title:'گفت‌وگوی جدید',messages:[]};renderMessages();showPage('home');$('#prompt').focus()});
 $('#makeImage').addEventListener('click',()=>{const p=$('#imagePrompt').value.trim();$('#imageResult').innerHTML='';const d=document.createElement('div');d.className='result';d.textContent=p?'درخواست تصویر آماده شد:\n'+p+'\n\nبرای تولید فایل تصویر، لازم است یک مدل تصویرساز به سایت متصل شود.':'لطفاً ابتدا توضیح تصویر را بنویس.';$('#imageResult').appendChild(d)});
 $('#runTool').addEventListener('click',()=>{const t=$('#toolInput').value.trim(),kind=$('#toolType').value;let out='';if(!t)out='لطفاً متن ورودی را وارد کن.';else if(kind==='summary'){const sentences=t.split(/(?<=[.!؟۔])\s+/);out=sentences.slice(0,Math.max(1,Math.ceil(sentences.length/3))).join(' ');if(out===t)out=t.split(/\s+/).slice(0,Math.max(10,Math.ceil(t.split(/\s+/).length*.55))).join(' ')+(t.split(/\s+/).length>10?'…':'')}else if(kind==='rewrite')out=t.replace(/\s+/g,' ').trim();else if(kind==='formal')out=t.replace(/میخوام/g,'می‌خواهم').replace(/میتونم/g,'می‌توانم').replace(/رو /g,' را ').replace(/واسه/g,'برای');else if(kind==='translate')out='ترجمه خودکار واقعی در این نسخه فعال نیست؛ برای ترجمه دقیق باید یک موتور ترجمه یا مدل زبانی متصل شود.\n\nمتن ورودی: '+t;else out='چند ایده برای ادامه:\n۱. هدف اصلی متن را مشخص کن.\n۲. سه راهکار متفاوت برای رسیدن به هدف پیشنهاد بده.\n۳. یک نمونه عملی یا مثال به متن اضافه کن.\n\nمتن پایه: '+t;$('#toolResult').innerHTML='';const d=document.createElement('div');d.className='result';d.textContent=out;$('#toolResult').appendChild(d)});
